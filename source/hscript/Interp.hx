@@ -280,17 +280,23 @@ class Interp
 		return exprReturn(expr);
 	}
 
-	function exprReturn(e) : Dynamic {
-		try {
+	function exprReturn(e):Dynamic
+	{
+		try
+		{
 			return expr(e);
-		} catch( e : Stop ) {
-			switch( e ) {
-			case SBreak: throw "Invalid break";
-			case SContinue: throw "Invalid continue";
-			case SReturn:
-				var v = returnValue;
-				returnValue = null;
-				return v;
+		return expr(e);
+		}
+		catch (e:Stop)
+		{
+			switch (e)
+			{
+				case SBreak:
+					throw "Invalid break";
+				case SContinue:
+					throw "Invalid continue";
+				case SReturn(v):
+					return v;
 			}
 		}
 		return null;
@@ -385,9 +391,9 @@ class Interp
 				return resolve(id);
 			case EVar(n, _, e):
 				var value = expr(e);
-				locals.set(n, {r: value});
+			    locals.set(n,{r: (e == null) ?null:value});
 				declared.push({n: n, old: locals.get(n)});
-				return value;
+				return null;
 			case EParent(e):
 				return expr(e);
 			case EBlock(exprs):
