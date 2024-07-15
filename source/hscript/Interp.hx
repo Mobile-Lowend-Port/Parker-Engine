@@ -280,22 +280,17 @@ class Interp
 		return exprReturn(expr);
 	}
 
-	function exprReturn(e):Dynamic
-	{
-		try
-		{
+	function exprReturn(e) : Dynamic {
+		try {
 			return expr(e);
-		}
-		catch (e:Stop)
-		{
-			switch (e)
-			{
-				case SBreak:
-					throw "Invalid break";
-				case SContinue:
-					throw "Invalid continue";
-				case SReturn(v):
-					return v;
+		} catch( e : Stop ) {
+			switch( e ) {
+			case SBreak: throw "Invalid break";
+			case SContinue: throw "Invalid continue";
+			case SReturn:
+				var v = returnValue;
+				returnValue = null;
+				return v;
 			}
 		}
 		return null;
