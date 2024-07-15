@@ -2,6 +2,7 @@ package;
 
 import flixel.util.FlxSave;
 import flixel.FlxG;
+import flixel.FlxCamera;
 import openfl.utils.Assets;
 import haxe.display.Display.Package;
 import haxe.io.Path;
@@ -136,6 +137,22 @@ class CoolUtil
 
 	public static function precacheImage(name:String, ?library:String = null):Void {
 		Paths.image(name, library);
+	}
+
+	public static function insertFlxCamera(idx:Int,cam:FlxCamera,defDraw:Bool) {
+        var cameras = [
+        for (i in FlxG.cameras.list) {
+            cam: i,
+            defaultDraw: FlxG.cameras.defaults.contains(i)
+        }
+        ];
+
+        for(i in cameras) FlxG.cameras.remove(i.cam, false);
+
+        cameras.insert(idx, {cam: cam,defaultDraw: defDraw});
+
+        for (i in cameras) FlxG.cameras.add(i.cam,i.defaultDraw);
+
 	}
 
 	public static function browserLoad(site:String) {
