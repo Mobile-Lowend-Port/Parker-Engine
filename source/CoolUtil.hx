@@ -143,7 +143,7 @@ class CoolUtil
         var cameras = [
         for (i in FlxG.cameras.list) {
             cam: i,
-            defaultDraw: FlxG.cameras.defaults.contains(i)
+            defaultDraw: FlxG.cameras.list.defaults.contains(i)
         }
         ];
 
