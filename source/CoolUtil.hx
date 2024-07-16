@@ -138,7 +138,7 @@ class CoolUtil
 	public static function precacheImage(name:String, ?library:String = null):Void {
 		Paths.image(name, library);
 	}
-
+/*
 	public static function insertFlxCamera(idx:Int,cam:FlxCamera,defDraw:Bool) {
         var cameras = [
         for (i in FlxG.cameras.list) {
@@ -154,7 +154,7 @@ class CoolUtil
         for (i in cameras) FlxG.cameras.add(i.cam,i.defaultDraw);
 
 	}
-
+*/
 	public static function browserLoad(site:String) {
 		#if linux
 		Sys.command('/usr/bin/xdg-open', [site]);
