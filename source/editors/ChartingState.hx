@@ -979,11 +979,12 @@ class ChartingState extends MusicBeatState
 		];
 		
 		for (i in 0...directories.length) {
-			var directory:String =  directories[i];
+		for (end in endexts){
+		var directory:String =  directories[i];
 			if(FileSystem.exists(directory)) {
 				for (file in FileSystem.readDirectory(directory)) {
 					var path = haxe.io.Path.join([directory, file]);
-					if (!FileSystem.isDirectory(path) && file.endsWith(endexts)) {
+					if (!FileSystem.isDirectory(path) && file.endsWith(end)) {
 						var fileToCheck:String = file.substr(0, file.length - 4);
 						if(!noteTypeMap.exists(fileToCheck)) {
 							displayNameList.push(fileToCheck);
@@ -995,6 +996,7 @@ class ChartingState extends MusicBeatState
 				}
 			}
 		}
+	}
 	#end
 
 		for (i in 1...displayNameList.length) {
