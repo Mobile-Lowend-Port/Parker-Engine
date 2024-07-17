@@ -995,7 +995,6 @@ class ChartingState extends MusicBeatState
 				}
 			}
 		}
-	}
 	#end
 
 		for (i in 1...displayNameList.length) {
