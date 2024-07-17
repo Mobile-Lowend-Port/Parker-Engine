@@ -2060,7 +2060,7 @@ class PlayState extends MusicBeatState
 	{
 		insert(members.indexOf(boyfriendGroup), obj);
 	}
-	public function addBehindDad (obj:FlxObject)
+	public function addBehindDad(obj:FlxObject)
 	{
 		insert(members.indexOf(dadGroup), obj);
 	}
@@ -5046,6 +5046,7 @@ class PlayState extends MusicBeatState
 		return false;
 	}
 	#end
+	
     public function callOnHScripts(name:String, ?args:Array<Any>):Array<Dynamic>
     {
     return scripts.executeAllFunc(name, args); 
@@ -5231,8 +5232,6 @@ class PlayState extends MusicBeatState
 		if (scripts == null)
 			return;
         
-        var UTF8 = new UTF8();
-        
 		var scriptData:Map<String, String> = [];
 		
 		var scriptEncodedData:Map<String, String> = [];
@@ -5242,12 +5241,12 @@ class PlayState extends MusicBeatState
 		
 		var filesEncoded:Array<String> = SONG.song == null ? [] : ScriptUtil.findEncodedScriptsInDir(Paths.modFolders("data/" + Paths.formatToSongPath(SONG.song)));
 
-		if (FileSystem.exists(Paths.modFolders("scripts/global")))
+		if (FileSystem.exists(Paths.modFolders("scripts/global") || Paths.modFolders("scripts")))
 		{
-			for (_ in ScriptUtil.findScriptsInDir(Paths.modFolders("scripts/global")))
+			for (_ in ScriptUtil.findScriptsInDir(Paths.modFolders("scripts/global") || Paths.modFolders("scripts")))
 				files.push(_);
 		}
-
+		
 		for (file in files)
 		{
 			var hx:Null<String> = null;
@@ -5262,31 +5261,6 @@ class PlayState extends MusicBeatState
 				if (!scriptData.exists(scriptName))
 				{
 					scriptData.set(scriptName, hx);
-				}
-			}
-		}
-		
-		
-		if (FileSystem.exists(Paths.modFolders("scripts/global")))
-		{
-			for (_ in ScriptUtil.findEncodedScriptsInDir(Paths.modFolders("scripts/global")))
-				filesEncoded.push(_);
-		}
-		
-		for (file in filesEncoded)
-		{
-			var hx:Null<String> = null;
-
-			if (FileSystem.exists(file)){
-			var UTF8s:haxe.io.Bytes = haxe.io.Bytes.ofString(File.getContent(file));
-            hx = UTF8.decode(UTF8s);}
-			if (hx != null)
-			{
-				var scriptName:String = CoolUtil.getFileStringFromPath(file);
-
-				if (!scriptEncodedData.exists(scriptName))
-				{
-					scriptEncodedData.set(scriptName, hx);
 				}
 			}
 		}
@@ -5314,26 +5288,47 @@ class PlayState extends MusicBeatState
 			}
 		}
 		
-		if (SONG.stage != null)
+		for (notetype in noteTypeMap.keys())
 		{
 			var hx:Null<String> = null;
 
 			for (extn in ScriptUtil.extns)
 			{
-				var path:String = Paths.modFolders('stages/' + SONG.stage + '.hxenc');
+				var path:String = Paths.modFolders('custom_notetypes/' + notetype + '.$extn');
 
 				if (FileSystem.exists(path))
 				{
-					var UTF8S:haxe.io.Bytes = haxe.io.Bytes.ofString(File.getContent(path));
-                    hx = UTF8.decode(UTF8S);
+					hx = File.getContent(path);
 					break;
 				}
 			}
 
 			if (hx != null)
 			{
-				if (!scriptEncodedData.exists("stage"))
-					scriptEncodedData.set("stage", hx);
+				if (!scriptData.exists(notetype))
+					scriptData.set(notetype, hx);
+			}
+		}
+		
+		for (event in eventPushedMap.keys())
+		{
+			var hx:Null<String> = null;
+
+			for (extn in ScriptUtil.extns)
+			{
+				var path:String = Paths.modFolders('custom_events/' + event + '.$extn');
+
+				if (FileSystem.exists(path))
+				{
+					hx = File.getContent(path);
+					break;
+				}
+			}
+
+			if (hx != null)
+			{
+				if (!scriptData.exists(event))
+					scriptData.set(event, hx);
 			}
 		}
 
@@ -5344,16 +5339,6 @@ class PlayState extends MusicBeatState
 			else
 			{
 				scripts.getScriptByTag(scriptName).error("Duplacite Script Error!", '$scriptName: Duplicate Script');
-			}
-		}
-		//Encoded
-		for (scriptName => hx in scriptEncodedData)
-		{
-			if (scripts.getScriptByTag(scriptName) == null)
-				scripts.addScript(scriptName).executeString(hx);
-			else
-			{
-				scripts.getScriptByTag(scriptName).error("Duplacite Script Encoded Error!", '$scriptName: Duplicate Script');
 			}
 		}
 	}
@@ -5420,7 +5405,7 @@ class PlayState extends MusicBeatState
 
 	function initEventScript(name:String) {}
 
-	function initCharScript(name:String)
+	public function initCharScript(name:String)
 	{
 		if (scripts == null)
 			return;
