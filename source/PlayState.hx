@@ -324,6 +324,7 @@ class PlayState extends MusicBeatState
 	// Lua shit
 	public static var instance:PlayState;
 	public var luaArray:Array<FunkinLua> = [];
+	public var hxArray:Array<ScriptGroup> = [];
 	private var luaDebugGroup:FlxTypedGroup<DebugLuaText>;
 	public var introSoundsSuffix:String = '';
 
@@ -1242,6 +1243,14 @@ class PlayState extends MusicBeatState
 			startLuasOnFolder('custom_events/' + event + '.lua');
 		}
 		#end
+		for (notetype in noteTypeMap.keys())
+		{
+			startHScriptsOnFolder('custom_notetypes/' + notetype);
+		}
+		for (event in eventPushedMap.keys())
+		{
+			startHScriptsOnFolder('custom_events/' + event);
+		}
 		noteTypeMap.clear();
 		noteTypeMap = null;
 		eventPushedMap.clear();
@@ -5047,6 +5056,35 @@ class PlayState extends MusicBeatState
 	}
 	#end
 	
+	public function startHScriptsOnFolder(name:String)
+	{
+		if (scripts == null)
+			return;
+
+		var hx:Null<String> = null;
+
+		for (extn in ScriptUtil.extns)
+		{
+			var path = Paths.modFolders(name + '.$extn');
+
+			if (FileSystem.exists(path))
+			{
+				hx = File.getContent(path);
+				break;
+			}
+		}
+
+		if (hx != null)
+		{
+			if (scripts.getScriptByTag(name) == null)
+				scripts.addScript(name).executeString(hx);
+			else
+			{
+				scripts.getScriptByTag(name).error("Duplacite Script Error!", '$name: Duplicate Script');
+			}
+		}
+	}
+	
     public function callOnHScripts(name:String, ?args:Array<Any>):Array<Dynamic>
     {
     return scripts.executeAllFunc(name, args); 
@@ -5238,8 +5276,6 @@ class PlayState extends MusicBeatState
 
 		// SONG && GLOBAL SCRIPTS AND ENCODED
 		var files:Array<String> = SONG.song == null ? [] : ScriptUtil.findScriptsInDir(Paths.modFolders("data/" + Paths.formatToSongPath(SONG.song)));
-		
-		var filesEncoded:Array<String> = SONG.song == null ? [] : ScriptUtil.findEncodedScriptsInDir(Paths.modFolders("data/" + Paths.formatToSongPath(SONG.song)));
 
 		if (FileSystem.exists(Paths.modFolders("scripts/global")))
 		{
