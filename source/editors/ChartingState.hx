@@ -967,13 +967,23 @@ class ChartingState extends MusicBeatState
 		for(mod in Paths.getGlobalMods())
 			directories.push(Paths.mods(mod + '/custom_notetypes/'));
 		#end
-        for (extn in ScriptUtil.extns){
+		
+        var endexts:Array<String> = [
+			#if LUA_ALLOWED
+			".lua",
+			#end
+			".hscript",
+			"hsc",
+			".hx",
+			".hxs"
+		];
+		
 		for (i in 0...directories.length) {
 			var directory:String =  directories[i];
 			if(FileSystem.exists(directory)) {
 				for (file in FileSystem.readDirectory(directory)) {
 					var path = haxe.io.Path.join([directory, file]);
-					if (!FileSystem.isDirectory(path) && file.endsWith('.lua') || !FileSystem.isDirectory(path) && file.endsWith('.$extn')) {
+					if (!FileSystem.isDirectory(path) && file.endsWith(endexts)) {
 						var fileToCheck:String = file.substr(0, file.length - 4);
 						if(!noteTypeMap.exists(fileToCheck)) {
 							displayNameList.push(fileToCheck);
