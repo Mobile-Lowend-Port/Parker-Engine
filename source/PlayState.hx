@@ -1126,6 +1126,32 @@ class PlayState extends MusicBeatState
 			}
 		}
 		#end
+		
+		for (notetype in noteTypeMap.keys())
+		{
+			var hx:Null<String> = null;
+
+    		for (extn in ScriptUtil.extns)
+    		{
+    			var path = Paths.modFolders("custom_notetypes/" + notetype + '.$extn');
+    
+    			if (FileSystem.exists(path))
+    			{
+    				hx = File.getContent(path);
+    				break;
+    			}
+    		}
+    
+    		if (hx != null)
+    		{
+    			if (scripts.getScriptByTag(notetype) == null)
+    				scripts.addScript(notetype).executeString(hx);
+    			else
+    			{
+    				scripts.getScriptByTag(notetype).error("Duplacite Script Error!", '$name: Duplicate Script');
+    			}
+    		}
+		}
 
 		// After all characters being loaded, it makes then invisible 0.01s later so that the player won't freeze when you change characters
 		// add(strumLine);
@@ -1245,11 +1271,11 @@ class PlayState extends MusicBeatState
 		#end
 		for (notetype in noteTypeMap.keys())
 		{
-			startHScriptsOnFolder('custom_notetypes/' + notetype);
+			startHScriptsOnFolder('custom_notetypes/', notetype);
 		}
 		for (event in eventPushedMap.keys())
 		{
-			startHScriptsOnFolder('custom_events/' + event);
+			startHScriptsOnFolder('custom_events/', event);
 		}
 		noteTypeMap.clear();
 		noteTypeMap = null;
@@ -5056,7 +5082,7 @@ class PlayState extends MusicBeatState
 	}
 	#end
 	
-	public function startHScriptsOnFolder(name:String)
+	public function startHScriptsOnFolder(paths:String, name:String)
 	{
 		if (scripts == null)
 			return;
@@ -5065,7 +5091,7 @@ class PlayState extends MusicBeatState
 
 		for (extn in ScriptUtil.extns)
 		{
-			var path = Paths.modFolders(name + '.$extn');
+			var path = Paths.modFolders(paths + name + '.$extn');
 
 			if (FileSystem.exists(path))
 			{
