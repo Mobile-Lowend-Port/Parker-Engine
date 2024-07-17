@@ -31,6 +31,7 @@ class ScriptGroup extends FlxBasic
 		var script:Script = ScriptUtil.getBasicScript();
 		ScriptUtil.setUpFlixelScript(script);
 		ScriptUtil.setUpFNFScript(script);
+		ScriptUtil.setUpModChatScript(script);
 
 		@:privateAccess
 		script._group = this;
