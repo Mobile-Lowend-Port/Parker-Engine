@@ -1126,7 +1126,7 @@ class PlayState extends MusicBeatState
 			}
 		}
 		#end
-		
+		/*
 		for (notetype in noteTypeMap.keys())
 		{
 			var hx:Null<String> = null;
@@ -1152,6 +1152,7 @@ class PlayState extends MusicBeatState
     			}
     		}
 		}
+		*/
 
 		// After all characters being loaded, it makes then invisible 0.01s later so that the player won't freeze when you change characters
 		// add(strumLine);
