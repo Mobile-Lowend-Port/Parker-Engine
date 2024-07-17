@@ -1148,7 +1148,7 @@ class PlayState extends MusicBeatState
     				scripts.addScript(notetype).executeString(hx);
     				else
     			{
-    				scripts.getScriptByTag(name).error("Duplacite Script Error!", '$notetype: Duplicate Script');
+    				scripts.getScriptByTag(notetype).error("Duplacite Script Error!", '$notetype: Duplicate Script');
     			}
     		}
 		}
