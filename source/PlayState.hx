@@ -5241,9 +5241,15 @@ class PlayState extends MusicBeatState
 		
 		var filesEncoded:Array<String> = SONG.song == null ? [] : ScriptUtil.findEncodedScriptsInDir(Paths.modFolders("data/" + Paths.formatToSongPath(SONG.song)));
 
-		if (FileSystem.exists(Paths.modFolders("scripts/global")) || FileSystem.exists(Paths.modFolders("scripts")))
+		if (FileSystem.exists(Paths.modFolders("scripts/global")))
 		{
-			for (_ in [ScriptUtil.findScriptsInDir(Paths.modFolders("scripts/global")), ScriptUtil.findScriptsInDir(Paths.modFolders("scripts"))])
+			for (_ in ScriptUtil.findScriptsInDir(Paths.modFolders("scripts/global")))
+				files.push(_);
+		}
+		
+		if (FileSystem.exists(Paths.modFolders("scripts")))
+		{
+			for (_ in ScriptUtil.findScriptsInDir(Paths.modFolders("scripts")))
 				files.push(_);
 		}
 		
