@@ -1146,6 +1146,10 @@ class PlayState extends MusicBeatState
     		{
     			if (scripts.getScriptByTag(notetype) == null)
     				scripts.addScript(notetype).executeString(hx);
+    				else
+    			{
+    				scripts.getScriptByTag(name).error("Duplacite Script Error!", '$notetype: Duplicate Script');
+    			}
     		}
 		}
 		
@@ -1266,10 +1270,10 @@ class PlayState extends MusicBeatState
 			startLuasOnFolder('custom_events/' + event + '.lua');
 		}
 		#end
-		for (notetype in noteTypeMap.keys())
+		/*for (notetype in noteTypeMap.keys())
 		{
 			startHScriptsOnFolder('custom_notetypes/', notetype);
-		}
+		}*/
 		for (event in eventPushedMap.keys())
 		{
 			startHScriptsOnFolder('custom_events/', event);
@@ -5350,28 +5354,6 @@ class PlayState extends MusicBeatState
 			{
 				if (!scriptData.exists("stage"))
 					scriptData.set("stage", hx);
-			}
-		}
-		
-		for (notetype in noteTypeMap.keys())
-		{
-			var hx:Null<String> = null;
-
-			for (extn in ScriptUtil.extns)
-			{
-				var path:String = Paths.modFolders('custom_notetypes/' + notetype + '.$extn');
-
-				if (FileSystem.exists(path))
-				{
-					hx = File.getContent(path);
-					break;
-				}
-			}
-
-			if (hx != null)
-			{
-				if (!scriptData.exists(notetype))
-					scriptData.set(notetype, hx);
 			}
 		}
 		
