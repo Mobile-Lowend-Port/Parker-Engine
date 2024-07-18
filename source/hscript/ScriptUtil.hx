@@ -287,40 +287,305 @@ class ScriptUtil
 		return arr.contains(ScriptReturn.PUASE);
 	}
 }
-/*待开发
+
+class HScriptState extends MusicBeatState
+{
+	var file:String = '';
+	var stateScript:Script;
+	public var scripts:ScriptGroup;
+
+	public function new(fileName:String, ?additionalVars:Map<String, Any>)
+	{
+		//super(false); // false because the whole point of this state is its scripted lol
+		
+		var hx:Null<String> = null;
+        var endexts:Array<String> = [
+			".hscript",
+			"hsc",
+			".hx",
+			".hxs"
+		];
+		
+		stateScript = new Script();
+		scripts = new ScriptGroup();
+		
+		file = fileName;
+		for (extn in endexts){
+		for (filePath in Paths.modFolders("states/"))
+		{
+			var name = filePath + fileName;
+			if (!name.endsWith(extn))
+				name += extn;
+			//trace(filePath, name);
+			if (!FileSystem.exists(name))
+				continue;
+			
+			if (FileSystem.exists(name))
+			{
+				hx = File.getContent(name);
+				break;
+			}
+
+			if (scripts.getScriptByTag(name) == null)
+				scripts.addScript(name).executeString(hx);
+			else
+			{
+				scripts.getScriptByTag(fileName).error("Duplacite Script Error!", '$fileName: Duplicate Script');
+			}
+			break;
+		    }
+		}
+
+		stateScript.executeFunc("onLoad");
+	}
+
+	override function create()
+	{
+		// UPDATE: realised I should be using the "on" prefix just so if a script needs to call an internal function it doesnt cause issues
+		// (Also need to figure out how to give the super to the classes incase that's needed in the on[function] funcs though honestly thats what the post functions are for)
+		// I'd love to modify HScript to add override specifically for troll engine hscript
+		// THSCript...
+
+		if (stateScript == null)
+		{
+			FlxG.switchState(new MainMenuState(false));
+			return;
+		}
+
+		// onCreate is used when the script is created so lol
+		if (stateScript.executeFunc("onStateCreate", []) == FunkinLua.Function_Stop) // idk why you'd return stop on create on a hscriptstate but.. sure
+			return;
+
+		super.create();
+		stateScript.executeFunc("onStateCreatePost");
+	}
+
+	override function update(e)
+	{
+		if (FlxG.keys.justPressed.F7)
+			if (FlxG.keys.pressed.CONTROL)
+				FlxG.switchState(new FreeplayState());
+			else
+				FlxG.switchState(new HScriptState(file));
+
+		if (stateScript.executeFunc("onUpdate", [e]) == FunkinLua.Function_Stop)
+			return;
+
+		super.update(e);
+
+		stateScript.executeFunc("onUpdatePost", [e]);
+	}
+
+	override function beatHit()
+	{
+		stateScript.executeFunc("onBeatHit");
+		super.beatHit();
+	}
+
+	override function stepHit()
+	{
+		stateScript.executeFunc("onStepHit");
+		super.stepHit();
+	}
+
+	override function closeSubState()
+	{
+		if (stateScript.executeFunc("onCloseSubState") == FunkinLua.Function_Stop)
+			return;
+
+		super.closeSubState();
+
+		stateScript.executeFunc("onCloseSubStatePost");
+	}
+
+	override function onFocus()
+	{
+		if (stateScript.executeFunc("onOnFocus") == FunkinLua.Function_Stop)
+			return;
+
+		super.onFocus();
+
+		stateScript.executeFunc("onOnFocusPost");
+	}
+
+	override function onFocusLost()
+	{
+		if (stateScript.executeFunc("onOnFocusLost") == FunkinLua.Function_Stop)
+			return;
+
+		super.onFocusLost();
+
+		stateScript.executeFunc("onOnFocusLostPost");
+	}
+
+	override function onResize(w:Int, h:Int)
+	{
+		if (stateScript.executeFunc("onOnResize", [w, h]) == FunkinLua.Function_Stop)
+			return;
+
+		super.onResize(w, h);
+
+		stateScript.executeFunc("onOnResizePost", [w, h]);
+	}
+
+	override function openSubState(subState:FlxSubState)
+	{
+		if (stateScript.executeFunc("onOpenSubState", [subState]) == FunkinLua.Function_Stop)
+			return;
+
+		super.openSubState(subState);
+
+		stateScript.executeFunc("onOpenSubStatePost", [subState]);
+	}
+
+	override function resetSubState()
+	{
+		if (stateScript.executeFunc("onResetSubState") == FunkinLua.Function_Stop)
+			return;
+
+		super.resetSubState();
+
+		stateScript.executeFunc("onResetSubStatePost");
+	}
+
+	override function startOutro(onOutroFinished:() -> Void)
+	{
+		final currentState = FlxG.state;
+
+		if (stateScript.executeFunc("onStartOutro", [onOutroFinished]) == FunkinLua.Function_Stop)
+			return;
+
+		if (FlxG.state == currentState) // if "onOutroFinished" wasnt called by the func above ^ then call onOutroFinished for it
+			onOutroFinished(); // same as super.startOutro(onOutroFinished)
+
+		stateScript.executeFunc("onStartOutroPost", []);
+	}
+
+	static var switchToDeprecation = false;
+
+	override function switchTo(s:FlxState)
+	{
+		if (!stateScript.exists("onSwitchTo"))
+			return super.switchTo(s);
+
+		if (!switchToDeprecation)
+		{
+			switchToDeprecation = true;
+		}
+		if (stateScript.executeFunc("onSwitchTo", [s]) == FunkinLua.Function_Stop)
+			return false;
+
+		super.switchTo(s);
+
+		stateScript.executeFunc("onSwitchToPost", [s]);
+		return true;
+	}
+
+	override function transitionIn()
+	{
+		if (stateScript.executeFunc("onTransitionIn") == FunkinLua.Function_Stop)
+			return;
+
+		super.transitionIn();
+
+		stateScript.executeFunc("onTransitionInPost");
+	}
+
+	override function transitionOut(?onExit:() -> Void)
+	{
+		if (stateScript.executeFunc("onTransitionOut", [onExit]) == FunkinLua.Function_Stop)
+			return;
+
+		super.transitionOut(onExit);
+
+		stateScript.executeFunc("onTransitionOutPost", [onExit]);
+	}
+
+	override function draw()
+	{
+		if (stateScript.executeFunc("onDraw", []) == FunkinLua.Function_Stop)
+			return;
+
+		super.draw();
+
+		stateScript.executeFunc("onDrawPost", []);
+	}
+
+	override function destroy()
+	{
+		if (stateScript.executeFunc("onDestroy", []) == FunkinLua.Function_Stop)
+			return;
+
+		super.destroy();
+
+		stateScript.executeFunc("onDestroyPost", []);
+	}
+
+	// idk sometimes you wanna override add/remove
+	override function add(member:FlxBasic):FlxBasic
+	{
+		if (stateScript.executeFunc("onAdd", [member], []) == FunkinLua.Function_Stop)
+			return member;
+
+		super.add(member);
+
+		stateScript.executeFunc("onAddPost", [member]);
+		return member;
+	}
+
+	override function remove(member:FlxBasic, splice:Bool = false):FlxBasic
+	{
+		if (stateScript.executeFunc("onRemove", [member, splice]) == FunkinLua.Function_Stop)
+			return member;
+
+		super.remove(member, splice);
+
+		stateScript.executeFunc("onRemovePost", [member, splice]);
+		return member;
+	}
+
+	override function insert(position:Int, member:FlxBasic):FlxBasic
+	{
+		if (stateScript.executeFunc("onInsert", [position, member]) == FunkinLua.Function_Stop)
+			return member;
+
+		super.insert(position, member);
+
+		stateScript.executeFunc("onInsertPost", [position, member]);
+
+		return member;
+	}
+}
+
+/*
 class HScriptSubstate extends MusicBeatSubstate
 {
-	public var script:ScriptGroup;
+	public var scripts:ScriptGroup;
+	var script:Script;
 
 	public function new(ScriptName:String, ?additionalVars:Map<String, Any>)
 	{
 		super();
 		
-		script = new ScriptGroup();
+		scripts = new ScriptGroup();
 
 		var fileName = 'substates/$ScriptName.$ScriptUtil.extns';
 
 
-		for (filePath in [#if MODS_ALLOWED Paths.modFolders(fileName), Paths.mods(fileName), #end Paths.getPreloadPath(fileName)])
+		for (filePath in [#if MODS_ALLOWED Paths.modFolders(fileName) #end Paths.getPreloadPath(fileName)])
 		{
 			if (!FileSystem.exists(filePath)) continue;
 
 			// some shortcuts
-			var variables = new Map<String, Dynamic>();
-			variables.set("this", this);
-			variables.set("add", this.add);
-			variables.set("remove", this.remove);
-			variables.set("getControls", function(){ return controls;}); // i get it now
-			variables.set("close", this.close);
-			variables.set('members',this.members);
-			variables.set('cameras',this.cameras);
-			variables.set('insert',this.insert);
-
-
-			if (additionalVars != null){
-				for (key in additionalVars.keys())
-					variables.set(key, additionalVars.get(key));
-			}
+            for (scriptName => hx in scriptData)
+    		{
+    			if (scripts.getScriptByTag(scriptName) == null)
+    				scripts.addScript(scriptName).executeString(hx);
+    			else
+    			{
+    				scripts.getScriptByTag(scriptName).error("Duplacite Script Error!", '$scriptName: Duplicate Script');
+    			}
+    		}
 
 			scripts.onAddScript.push(filePath);
 			script.scriptName = ScriptName;
@@ -341,12 +606,12 @@ class HScriptSubstate extends MusicBeatSubstate
 			return; 
 		
 		super.update(e);
-		script.call("updatePost", [e]);
+		script.executeFunc("updatePost", [e]);
 	}
 
 	override function close(){
 		if (script != null)
-			script.call("onClose");
+			script.executeFunc("onClose");
 		
 		return super.close();
 	}
@@ -354,14 +619,14 @@ class HScriptSubstate extends MusicBeatSubstate
 	override function destroy()
 	{
 		if (script != null){
-			script.call("onDestroy");
+			script.executeFunc("onDestroy");
 			script.stop();
 		}
 		script = null;
 
 		return super.destroy();
 	}
-}*/
+}/*
 class CustomFlxColor
 {
 	// These aren't part of FlxColor but i thought they could be useful
