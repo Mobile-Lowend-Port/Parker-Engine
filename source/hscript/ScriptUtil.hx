@@ -331,6 +331,7 @@ class HScriptState extends MusicBeatState
 			else
 			{
 				scripts.getScriptByTag(fileName).error("Duplacite Script Error!", '$fileName: Duplicate Script');
+				Sys.exit(0);
 			}
 			break;
 		    }
@@ -388,129 +389,6 @@ class HScriptState extends MusicBeatState
 		super.stepHit();
 	}
 
-	override function closeSubState()
-	{
-		if (stateScript.executeFunc("onCloseSubState") == FunkinLua.Function_Stop)
-			return;
-
-		super.closeSubState();
-
-		stateScript.executeFunc("onCloseSubStatePost");
-	}
-
-	override function onFocus()
-	{
-		if (stateScript.executeFunc("onOnFocus") == FunkinLua.Function_Stop)
-			return;
-
-		super.onFocus();
-
-		stateScript.executeFunc("onOnFocusPost");
-	}
-
-	override function onFocusLost()
-	{
-		if (stateScript.executeFunc("onOnFocusLost") == FunkinLua.Function_Stop)
-			return;
-
-		super.onFocusLost();
-
-		stateScript.executeFunc("onOnFocusLostPost");
-	}
-
-	override function onResize(w:Int, h:Int)
-	{
-		if (stateScript.executeFunc("onOnResize", [w, h]) == FunkinLua.Function_Stop)
-			return;
-
-		super.onResize(w, h);
-
-		stateScript.executeFunc("onOnResizePost", [w, h]);
-	}
-
-	override function openSubState(subState:FlxSubState)
-	{
-		if (stateScript.executeFunc("onOpenSubState", [subState]) == FunkinLua.Function_Stop)
-			return;
-
-		super.openSubState(subState);
-
-		stateScript.executeFunc("onOpenSubStatePost", [subState]);
-	}
-
-	override function resetSubState()
-	{
-		if (stateScript.executeFunc("onResetSubState") == FunkinLua.Function_Stop)
-			return;
-
-		super.resetSubState();
-
-		stateScript.executeFunc("onResetSubStatePost");
-	}
-
-	override function startOutro(onOutroFinished:() -> Void)
-	{
-		final currentState = FlxG.state;
-
-		if (stateScript.executeFunc("onStartOutro", [onOutroFinished]) == FunkinLua.Function_Stop)
-			return;
-
-		if (FlxG.state == currentState) // if "onOutroFinished" wasnt called by the func above ^ then call onOutroFinished for it
-			onOutroFinished(); // same as super.startOutro(onOutroFinished)
-
-		stateScript.executeFunc("onStartOutroPost", []);
-	}
-
-	static var switchToDeprecation = false;
-
-	override function switchTo(s:FlxState)
-	{
-		if (!stateScript.exists("onSwitchTo"))
-			return super.switchTo(s);
-
-		if (!switchToDeprecation)
-		{
-			switchToDeprecation = true;
-		}
-		if (stateScript.executeFunc("onSwitchTo", [s]) == FunkinLua.Function_Stop)
-			return false;
-
-		super.switchTo(s);
-
-		stateScript.executeFunc("onSwitchToPost", [s]);
-		return true;
-	}
-
-	override function transitionIn()
-	{
-		if (stateScript.executeFunc("onTransitionIn") == FunkinLua.Function_Stop)
-			return;
-
-		super.transitionIn();
-
-		stateScript.executeFunc("onTransitionInPost");
-	}
-
-	override function transitionOut(?onExit:() -> Void)
-	{
-		if (stateScript.executeFunc("onTransitionOut", [onExit]) == FunkinLua.Function_Stop)
-			return;
-
-		super.transitionOut(onExit);
-
-		stateScript.executeFunc("onTransitionOutPost", [onExit]);
-	}
-
-	override function draw()
-	{
-		if (stateScript.executeFunc("onDraw", []) == FunkinLua.Function_Stop)
-			return;
-
-		super.draw();
-
-		stateScript.executeFunc("onDrawPost", []);
-	}
-
 	override function destroy()
 	{
 		if (stateScript.executeFunc("onDestroy", []) == FunkinLua.Function_Stop)
@@ -519,41 +397,6 @@ class HScriptState extends MusicBeatState
 		super.destroy();
 
 		stateScript.executeFunc("onDestroyPost", []);
-	}
-
-	// idk sometimes you wanna override add/remove
-	override function add(member:FlxBasic):FlxBasic
-	{
-		if (stateScript.executeFunc("onAdd", [member], []) == FunkinLua.Function_Stop)
-			return member;
-
-		super.add(member);
-
-		stateScript.executeFunc("onAddPost", [member]);
-		return member;
-	}
-
-	override function remove(member:FlxBasic, splice:Bool = false):FlxBasic
-	{
-		if (stateScript.executeFunc("onRemove", [member, splice]) == FunkinLua.Function_Stop)
-			return member;
-
-		super.remove(member, splice);
-
-		stateScript.executeFunc("onRemovePost", [member, splice]);
-		return member;
-	}
-
-	override function insert(position:Int, member:FlxBasic):FlxBasic
-	{
-		if (stateScript.executeFunc("onInsert", [position, member]) == FunkinLua.Function_Stop)
-			return member;
-
-		super.insert(position, member);
-
-		stateScript.executeFunc("onInsertPost", [position, member]);
-
-		return member;
 	}
 }
 
@@ -626,7 +469,7 @@ class HScriptSubstate extends MusicBeatSubstate
 
 		return super.destroy();
 	}
-}/*
+}*/
 class CustomFlxColor
 {
 	// These aren't part of FlxColor but i thought they could be useful
