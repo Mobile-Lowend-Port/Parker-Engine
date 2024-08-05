@@ -287,7 +287,7 @@ class ScriptUtil
 		return arr.contains(ScriptReturn.PUASE);
 	}
 }
-
+/*
 class HScriptState extends MusicBeatState
 {
 	var file:String = '';
@@ -301,7 +301,7 @@ class HScriptState extends MusicBeatState
 		var hx:Null<String> = null;
         var endexts:Array<String> = [
 			".hscript",
-			"hsc",
+			".hsc",
 			".hx",
 			".hxs"
 		];
