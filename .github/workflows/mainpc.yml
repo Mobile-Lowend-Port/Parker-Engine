@@ -33,7 +33,6 @@ jobs:
           haxelib setup C:/haxelib
           haxelib install hxcpp > nul
           haxelib install lime 8.0.2
-          haxelib set lime 8.0.2
           haxelib install openfl
           haxelib --never install flixel
           haxelib run lime setup flixel
@@ -55,6 +54,7 @@ jobs:
           haxelib git hscript-ex https://github.com/ianharrigan/hscript-ex
           haxelib git discord_rpc https://github.com/Aidan63/linc_discord-rpc
           haxelib install hxcpp-debug-server
+          haxelib set lime 8.0.2
           haxelib list
         shell: cmd
       - name: Create Version Tag
