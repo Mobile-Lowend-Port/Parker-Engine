@@ -109,12 +109,6 @@ class FunkinLua {
 
 		//LuaL.dostring(lua, CLENSE);
 		
-		for (name => func in customFunctions)
-		{
-			if(func != null)
-				set(name, func);
-				// Lua_helper.add_callback(lua, name, func);
-		}
 		try{
 			var result:Dynamic = LuaL.dofile(lua, script);
 			var resultStr:String = Lua.tostring(lua, result);
@@ -2883,6 +2877,13 @@ class FunkinLua {
 			#end
 			return list;
 		});
+		
+		for (name => func in customFunctions)
+		{
+			if(func != null)
+				set(name, func);
+				// Lua_helper.add_callback(lua, name, func);
+		}
 
 		call('onCreate', []);
 		#end
