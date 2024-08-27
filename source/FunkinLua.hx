@@ -1215,7 +1215,7 @@ class FunkinLua {
 			if(penisExam != null) {
 				PlayState.instance.modchartTweens.set(tag, FlxTween.num(value1, value2, duration, {ease: getFlxEaseByString(ease), onUpdate: function(num:FlxTween){
                 PlayState.instance.callOnLuas('onTweenUpdateNum', [tag, num]);
-                }, onComplete: (flixel.tweens.TweenCallback)->{ PlayState.instance.modchartTweens.remove(tag); PlayState.instance.callOnLuas('onTweenCompleted', [tag]); }}));
+                }, onComplete: (flixel.tweens.TweenCallback)->{ PlayState.instance.modchartTweens.remove(tag); PlayState.instance.callOnLuas('onTweenCompleted', [tag]); }}););
 			} else {
 				luaTrace('doTweenNum: Couldnt find object: ' + tag, false, false, FlxColor.RED);
 			}
