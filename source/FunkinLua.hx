@@ -2299,7 +2299,7 @@ class FunkinLua {
 		
 		set("makeLuaVideoSprite", function(tag:String, ?path:String = null, ?x:Float = 0, ?y:Float = 0, ?destroyOnUse = true) {
 			tag = tag.replace('.', '');
-			resetSpriteTag(tag, true);
+			resetVideoSpriteTag(tag, true);
 			var leSprite:ModchartVideoSprite = new ModchartVideoSprite(destroyOnUse);
 			leSprite.addCallback('onFormat',()->{
 			leSprite.x = x;
@@ -2321,32 +2321,32 @@ class FunkinLua {
 		});
 		
 		set("playVideo", function(tag:String) {
-		    if(PlayState.instance.getLuaObject(tag,false,true)!=null){
-			PlayState.instance.getLuaObject(tag,false,true).play();
+		    if(PlayState.instance.getLuaVideoObject(tag)!=null){
+			PlayState.instance.getLuaVideoObject(tag).play();
 			return;
 		}});
 		
 		// I dare not use this function. I seldom use it.
 		set("stopVideo", function(tag:String) {
-		    if(PlayState.instance.getLuaObject(tag,false,true)!=null){
-			PlayState.instance.getLuaObject(tag,false,true).stop();
+		    if(PlayState.instance.getLuaVideoObject(tag)!=null){
+			PlayState.instance.getLuaVideoObject(tag).stop();
 			return;
 		}});
 		
 		set("EndVideo", function(tag:String) {
-		    if(PlayState.instance.getLuaObject(tag,false,true)!=null){
-			PlayState.instance.getLuaObject(tag,false,true).destroy();
+		    if(PlayState.instance.getLuaVideoObject(tag)!=null){
+			PlayState.instance.getLuaVideoObject(tag).destroy();
 			return;
 		}});
 		
 		set("resumeVideo", function(tag:String) {
-		    if(PlayState.instance.getLuaObject(tag,false,true)!=null){
-			PlayState.instance.getLuaObject(tag,false,true).resume();
+		    if(PlayState.instance.getLuaVideoObject(tag)!=null){
+			PlayState.instance.getLuaVideoObject(tag).resume();
 			return;
 		}});
 		set("pauseVideo", function(tag:String) {
-		    if(PlayState.instance.getLuaObject(tag,false,true)!=null){
-			PlayState.instance.getLuaObject(tag,false,true).pause();
+		    if(PlayState.instance.getLuaVideoObject(tag)!=null){
+			PlayState.instance.getLuaVideoObject(tag).pause();
 			return;
 		}});
 
@@ -3167,9 +3167,7 @@ class FunkinLua {
 			return;
 		}
 
-        if (!video)
 		var pee:ModchartSprite = PlayState.instance.modchartSprites.get(tag);
-		else
 		var pee:ModchartVideoSprite = PlayState.instance.modchartVideo.get(tag);
 		
 		pee.kill();
@@ -3181,6 +3179,22 @@ class FunkinLua {
 		if (video != true)
 		PlayState.instance.modchartSprites.remove(tag);
 		else
+		PlayState.instance.modchartVideo.remove(tag);
+	}
+	
+	function resetVideoSpriteTag(tag:String) {
+		if(!PlayState.instance.modchartVideo.exists(tag)) {
+			return;
+		}
+
+		var pee:ModchartVideoSprite = PlayState.instance.modchartVideo.get(tag);
+		
+		pee.kill();
+		if(pee.wasAdded) {
+			PlayState.instance.remove(pee, true);
+		}
+		pee.destroy();
+		
 		PlayState.instance.modchartVideo.remove(tag);
 	}
 

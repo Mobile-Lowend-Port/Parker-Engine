@@ -1660,6 +1660,12 @@ class PlayState extends MusicBeatState
 		if(variables.exists(tag)) return variables.get(tag);
 		return null;
 	}
+	
+	public function getLuaVideoObject(tag:String):PsychVideoSprite {
+		if(modchartVideo.exists(tag)) return modchartVideo.get(tag);
+		if(variables.exists(tag)) return variables.get(tag);
+		return null;
+	}
 
 	function startCharacterPos(char:Character, ?gfCheck:Bool = false) {
 		if(gfCheck && char.curCharacter.startsWith('gf')) { //IF DAD IS GIRLFRIEND, HE GOES TO HER POSITION
