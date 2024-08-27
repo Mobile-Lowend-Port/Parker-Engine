@@ -2297,23 +2297,58 @@ class FunkinLua {
 			#end
 		});
 		
-		set("playVideo", function(videoFile:String, cam:String) {
-			#if VIDEOS_ALLOWED
-			if(FileSystem.exists(Paths.video(videoFile))) {
-				PlayState.instance.playVideo(videoFile, cam);
-				return true;
-			} else {
-			luaTrace('playVideo: Video file not found: ' + videoFile, false, false, FlxColor.RED);
+		set("makeLuaVideoSprite", function(tag:String, ?path:String = null, ?x:Float = 0, ?y:Float = 0, ?destroyOnUse = true) {
+			tag = tag.replace('.', '');
+			resetSpriteTag(tag, true);
+			var leSprite:ModchartVideoSprite = new ModchartVideoSprite(destroyOnUse);
+			leSprite.addCallback('onFormat',()->{
+			leSprite.x = x;
+			leSprite.y = y;
+            PlayState.instance.callOnLuas('onVideoFormat', [tag]);
+            });
+            leSprite.addCallback('onStart',()->{
+            PlayState.instance.callOnLuas('onVideoStart', [tag]);
+            });
+            leSprite.addCallback('onEnd',()->{
+            PlayState.instance.callOnLuas('onVideoFinished', [tag]);
+            });
+			if(path != null && path.length > 0)
+			{
+				leSprite.load(Paths.video(path));
 			}
-			return false;
-			#end
+			PlayState.instance.modchartVideo.set(tag, leSprite);
+			leSprite.active = true;
 		});
-		set("EndVideo", function() {
-			#if VIDEOS_ALLOWED
-				PlayState.instance.EndVideo();
-				return true;
-			#end
-		});
+		
+		set("playVideo", function(tag:String) {
+		    if(PlayState.instance.getLuaObject(tag,false,true)!=null){
+			PlayState.instance.getLuaObject(tag,false,true).play();
+			return;
+		}});
+		
+		// I dare not use this function. I seldom use it.
+		set("stopVideo", function(tag:String) {
+		    if(PlayState.instance.getLuaObject(tag,false,true)!=null){
+			PlayState.instance.getLuaObject(tag,false,true).stop();
+			return;
+		}});
+		
+		set("EndVideo", function(tag:String) {
+		    if(PlayState.instance.getLuaObject(tag,false,true)!=null){
+			PlayState.instance.getLuaObject(tag,false,true).destroy();
+			return;
+		}});
+		
+		set("resumeVideo", function(tag:String) {
+		    if(PlayState.instance.getLuaObject(tag,false,true)!=null){
+			PlayState.instance.getLuaObject(tag,false,true).resume();
+			return;
+		}});
+		set("pauseVideo", function(tag:String) {
+		    if(PlayState.instance.getLuaObject(tag,false,true)!=null){
+			PlayState.instance.getLuaObject(tag,false,true).pause();
+			return;
+		}});
 
 		set("playMusic", function(sound:String, volume:Float = 1, loop:Bool = false) {
 			FlxG.sound.playMusic(Paths.music(sound), volume, loop);
@@ -3127,18 +3162,26 @@ class FunkinLua {
 		PlayState.instance.modchartTexts.remove(tag);
 	}
 
-	function resetSpriteTag(tag:String) {
-		if(!PlayState.instance.modchartSprites.exists(tag)) {
+	function resetSpriteTag(tag:String, video:Bool) {
+		if(!PlayState.instance.modchartSprites.exists(tag) || video && !PlayState.instance.modchartVideo.exists(tag)) {
 			return;
 		}
 
+        if (!video)
 		var pee:ModchartSprite = PlayState.instance.modchartSprites.get(tag);
+		else
+		var pee:ModchartVideoSprite = PlayState.instance.modchartVideo.get(tag);
+		
 		pee.kill();
 		if(pee.wasAdded) {
 			PlayState.instance.remove(pee, true);
 		}
 		pee.destroy();
+		
+		if (video != true)
 		PlayState.instance.modchartSprites.remove(tag);
+		else
+		PlayState.instance.modchartVideo.remove(tag);
 	}
 
 	function cancelTween(tag:String) {
