@@ -3162,7 +3162,7 @@ class FunkinLua {
 		PlayState.instance.modchartTexts.remove(tag);
 	}
 
-	function resetSpriteTag(tag:String, video:Bool) {
+	function resetSpriteTag(tag:String, video:Bool=false) {
 		if(!PlayState.instance.modchartSprites.exists(tag) || video && !PlayState.instance.modchartVideo.exists(tag)) {
 			return;
 		}
