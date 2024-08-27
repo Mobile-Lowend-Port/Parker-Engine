@@ -118,6 +118,7 @@ class PlayState extends MusicBeatState
 	public var gfMap:Map<String, Character> = new Map();
 	public var modchartTweens:Map<String, FlxTween> = new Map<String, FlxTween>();
 	public var modchartSprites:Map<String, ModchartSprite> = new Map<String, ModchartSprite>();
+	public var modchartVideo:Map<String, ModchartVideoSprite> = new Map<String, ModchartVideoSprite>();
 	public var modchartTimers:Map<String, FlxTimer> = new Map<String, FlxTimer>();
 	public var modchartSounds:Map<String, FlxSound> = new Map<String, FlxSound>();
 	public var modchartTexts:Map<String, ModchartText> = new Map<String, ModchartText>();
@@ -1652,9 +1653,10 @@ class PlayState extends MusicBeatState
 		#end
 	}
 
-	public function getLuaObject(tag:String, text:Bool=true):FlxSprite {
+	public function getLuaObject(tag:String, text:Bool=true, video:Bool=true):FlxSprite {
 		if(modchartSprites.exists(tag)) return modchartSprites.get(tag);
 		if(text && modchartTexts.exists(tag)) return modchartTexts.get(tag);
+		if(video && modchartVideo.exists(tag)) return modchartVideo.get(tag);
 		if(variables.exists(tag)) return variables.get(tag);
 		return null;
 	}
@@ -4158,7 +4160,7 @@ class PlayState extends MusicBeatState
 			daLoop++;
 			if(numScore.x > xThing) xThing = numScore.x;
 			
-			//scripts.executeAllFunc('popUpScore', [rating, comboSpr, numScore]);
+			scripts.executeAllFunc('popUpScore', [rating, comboSpr, numScore]);
 		}
 		comboSpr.x = xThing + 50;
 		/*
