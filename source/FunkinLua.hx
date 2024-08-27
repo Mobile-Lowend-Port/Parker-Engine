@@ -1213,9 +1213,9 @@ class FunkinLua {
 		set("doTweenNum", function(tag:String, value1:Dynamic, value2:Dynamic, duration:Float, ease:String) {
 			var penisExam:Dynamic = tweenShit(tag, null);
 			if(penisExam != null) {
-				PlayState.instance.modchartTweens.set(tag, FlxTween.num(value1, value2, duration, {ease: FlxEase.quadOut, onUpdate: function(num:FlxTween){
+				PlayState.instance.modchartTweens.set(tag, FlxTween.num(value1, value2, duration, {ease: getFlxEaseByString(ease), onUpdate: function(num:FlxTween){
                 PlayState.instance.callOnLuas('onTweenUpdateNum', [tag, num]);
-                }, onComplete: ()->{ PlayState.instance.modchartTweens.remove(tag); PlayState.instance.callOnLuas('onTweenCompleted', [tag]); }}));
+                }, onComplete: (flixel.tweens.TweenCallback)->{ PlayState.instance.modchartTweens.remove(tag); PlayState.instance.callOnLuas('onTweenCompleted', [tag]); }}));
 			} else {
 				luaTrace('doTweenNum: Couldnt find object: ' + tag, false, false, FlxColor.RED);
 			}
