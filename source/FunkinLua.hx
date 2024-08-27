@@ -2299,7 +2299,7 @@ class FunkinLua {
 		
 		set("makeLuaVideoSprite", function(tag:String, ?path:String = null, ?x:Float = 0, ?y:Float = 0, ?destroyOnUse = true) {
 			tag = tag.replace('.', '');
-			resetVideoSpriteTag(tag, true);
+			resetVideoSpriteTag(tag);
 			var leSprite:ModchartVideoSprite = new ModchartVideoSprite(destroyOnUse);
 			leSprite.addCallback('onFormat',()->{
 			leSprite.x = x;
