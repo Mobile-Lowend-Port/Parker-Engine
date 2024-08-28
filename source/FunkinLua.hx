@@ -3163,12 +3163,11 @@ class FunkinLua {
 	}
 
 	function resetSpriteTag(tag:String) {
-		if(!PlayState.instance.modchartSprites.exists(tag) || video && !PlayState.instance.modchartVideo.exists(tag)) {
+		if(!PlayState.instance.modchartSprites.exists(tag)) {
 			return;
 		}
 
 		var pee:ModchartSprite = PlayState.instance.modchartSprites.get(tag);
-		var pee:ModchartVideoSprite = PlayState.instance.modchartVideo.get(tag);
 		
 		pee.kill();
 		if(pee.wasAdded) {
