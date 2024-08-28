@@ -3170,7 +3170,7 @@ class FunkinLua {
 		var pee:ModchartSprite = PlayState.instance.modchartSprites.get(tag);
 		
 		pee.kill();
-		if(pee.wasAdded) {
+		if(pee.destroyOnUse) {
 			PlayState.instance.remove(pee, true);
 		}
 		pee.destroy();
