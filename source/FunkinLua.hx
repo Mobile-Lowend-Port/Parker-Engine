@@ -3162,7 +3162,7 @@ class FunkinLua {
 		PlayState.instance.modchartTexts.remove(tag);
 	}
 
-	function resetSpriteTag(tag:String, video:Bool=false) {
+	function resetSpriteTag(tag:String) {
 		if(!PlayState.instance.modchartSprites.exists(tag) || video && !PlayState.instance.modchartVideo.exists(tag)) {
 			return;
 		}
@@ -3176,10 +3176,8 @@ class FunkinLua {
 		}
 		pee.destroy();
 		
-		if (video != true)
 		PlayState.instance.modchartSprites.remove(tag);
-		else
-		PlayState.instance.modchartVideo.remove(tag);
+		
 	}
 	
 	function resetVideoSpriteTag(tag:String) {
