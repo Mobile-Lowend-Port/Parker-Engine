@@ -104,7 +104,7 @@ class ScriptUtil
 		});
 
 		// Basic Stuff
-		script.set("this", this);
+		//script.set("this", this);
 		script.set("state", FlxG.state);
 		script.set("camera", FlxG.camera);
 		script.set("FlxG", FlxG);
