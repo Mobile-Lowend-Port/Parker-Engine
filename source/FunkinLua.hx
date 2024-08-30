@@ -112,8 +112,10 @@ class FunkinLua {
 		
 		try{
 			var result:Dynamic = LuaL.dofile(lua, script);
-			var resultHxLua:Dynamic = LuaL.dofile(lua, scriptHxLuaCode);
-			var resultStr:String = Lua.tostring(lua, [result, resultHxLua]);
+			
+			for (i in [result, scriptHxLuaCode]){
+			var resultStr:String = Lua.tostring(lua, i);
+			
 			if(resultStr != null && result != 0) {
 				trace('Error on lua script! ' + resultStr);
 				#if (windows || android)
@@ -123,6 +125,7 @@ class FunkinLua {
 				#end
 				lua = null;
 				return;
+				}
 			}
 		} catch(e:Dynamic) {
 			trace(e);
@@ -3518,7 +3521,7 @@ class FunkinLua {
 		return PlayState.instance.isDead ? GameOverSubstate.instance : PlayState.instance;
 	}
 	
-	public function executeLua(codeToRun:String)
+	public function executeLua(codeToRun:String):Dynamic
     {
      return scriptHxLuaCode = codeToRun;
     }
