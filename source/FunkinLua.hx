@@ -92,7 +92,8 @@ class FunkinLua {
 	public var scriptHxLuaCode:String = '';
 	public var closed:Bool = false;
 	
-	public var customFunctions:Map<String, Dynamic> = new Map<String, Dynamic>();
+	public static var customFunctions:Map<String, Dynamic> = new Map<String, Dynamic>();
+	
 	public static var callbacks:Map<String, Dynamic> = new Map<String, Dynamic>();
 
 	#if hscript
