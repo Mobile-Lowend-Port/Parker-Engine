@@ -89,10 +89,11 @@ class FunkinLua {
 	#end
 	public var camTarget:FlxCamera;
 	public var scriptName:String = '';
+	public var scriptHxLuaCode:String = '';
 	public var closed:Bool = false;
 	
-	public static var customFunctions:Map<String, Dynamic> = new Map<String, Dynamic>();
-	public var callbacks:Map<String, Dynamic> = new Map<String, Dynamic>();
+	public var customFunctions:Map<String, Dynamic> = new Map<String, Dynamic>();
+	public static var callbacks:Map<String, Dynamic> = new Map<String, Dynamic>();
 
 	#if hscript
 	public static var hscript:HScript = null;
@@ -110,7 +111,7 @@ class FunkinLua {
 		//LuaL.dostring(lua, CLENSE);
 		
 		try{
-			var result:Dynamic = LuaL.dofile(lua, script);
+			var result:Dynamic = LuaL.dofile(lua, [script, scriptHxLuaCode]);
 			var resultStr:String = Lua.tostring(lua, result);
 			if(resultStr != null && result != 0) {
 				trace('Error on lua script! ' + resultStr);
@@ -3516,10 +3517,10 @@ class FunkinLua {
 		return PlayState.instance.isDead ? GameOverSubstate.instance : PlayState.instance;
 	}
 	
-	public function executeLua(codeToRun:String):Dynamic
+	public function executeLua(codeToRun:String)
     {
-     return LuaL.dofile(lua, codeToRun);
-  }
+     return scriptHxLuaCode = codeToRun;
+    }
   
 }
 
