@@ -104,6 +104,7 @@ class ScriptUtil
 		});
 
 		// Basic Stuff
+		script.set("this", this);
 		script.set("state", FlxG.state);
 		script.set("camera", FlxG.camera);
 		script.set("FlxG", FlxG);
@@ -206,9 +207,8 @@ class ScriptUtil
 		#if LUA_ALLOWED
 		script.set("runLuaCode", function(str:String)
 		{
-		    var parentLua:FunkinLua;
-		    parentLua = new FunkinLua(null);
-			parentLua.executeLua(str);
+		    for (script in PlayState.instance.luaArray)
+			script.executeLua(str);
 		});
 		#end
 		

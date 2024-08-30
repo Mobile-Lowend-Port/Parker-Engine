@@ -257,25 +257,21 @@ class Script extends FlxBasic
 		});
 		
 		#if LUA_ALLOWED
-		set('createGlobalCallback', function(name:String, func:Dynamic, ?funk:Array<FunkinLua> = null)
+		set('createGlobalCallback', function(name:String, func:Dynamic)
         {
-            if(funk != null) {
-                for (script in funk) {
-                    if(script != null && script.lua != null && !script.closed) {
-                        Lua_helper.add_callback(script.lua, name, func);
-                    }
-                }
-            }
-            FunkinLua.customFunctions.set(name, func);
+            for (script in PlayState.instance.luaArray)
+				if(script != null && script.lua != null && !script.closed)
+					Lua_helper.add_callback(script.lua, name, func);
+
+			FunkinLua.customFunctions.set(name, func);
         });
 
 		// this one was tested
 		set('createCallback', function(name:String, func:Dynamic, ?funk:FunkinLua = null)
 		{
-		parentLua = new FunkinLua(null);
-			if(funk == null) funk = parentLua;
+		    if(funk == null) funk = parentLua;
 			
-			if(parentLua != null) funk.addLocalCallback(name, func);
+			if(parentLua != null) parentLua.addLocalCallback(name, func);
 			else funk.luaTrace('createCallback ($name): 3rd argument is null', false, false, FlxColor.RED);
 		});
 		#end
