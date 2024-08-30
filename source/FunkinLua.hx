@@ -89,7 +89,7 @@ class FunkinLua {
 	#end
 	public var camTarget:FlxCamera;
 	public var scriptName:String = '';
-	public var scriptHxLuaCode:String = '';
+	public var scriptHxLuaCode:Dynamic = '';
 	public var closed:Bool = false;
 	
 	public static var customFunctions:Map<String, Dynamic> = new Map<String, Dynamic>();
@@ -112,10 +112,10 @@ class FunkinLua {
 		//LuaL.dostring(lua, CLENSE);
 		
 		try{
-		    for (i in [script, scriptHxLuaCode]){
-			var result:Dynamic = LuaL.dofile(lua, i);
-			
-			var resultStr:String = Lua.tostring(lua, result);
+		    
+			var result:Dynamic = LuaL.dofile(lua, script);
+			for (i in [result, scriptHxLuaCode]){
+			var resultStr:String = Lua.tostring(lua, i);
 			if(resultStr != null && result != 0) {
 				trace('Error on lua script! ' + resultStr);
 				#if (windows || android)
