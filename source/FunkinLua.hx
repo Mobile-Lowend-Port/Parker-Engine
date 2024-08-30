@@ -88,7 +88,7 @@ class FunkinLua {
 	public var lua:State = null;
 	#end
 	public var camTarget:FlxCamera;
-	public var scriptName:String;
+	public var scriptName:String = '';
 	public var scriptHxLuaCode:String = '';
 	public var closed:Bool = false;
 	
