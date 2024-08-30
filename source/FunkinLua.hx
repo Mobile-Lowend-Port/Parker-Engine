@@ -88,7 +88,7 @@ class FunkinLua {
 	public var lua:State = null;
 	#end
 	public var camTarget:FlxCamera;
-	public var scriptName:String = '';
+	public var scriptName:String;
 	public var scriptHxLuaCode:String = '';
 	public var closed:Bool = false;
 	
@@ -111,8 +111,9 @@ class FunkinLua {
 		//LuaL.dostring(lua, CLENSE);
 		
 		try{
-			var result:Dynamic = LuaL.dofile(lua, [script, scriptHxLuaCode]);
-			var resultStr:String = Lua.tostring(lua, result);
+			var result:Dynamic = LuaL.dofile(lua, script);
+			var resultHxLua:Dynamic = LuaL.dofile(lua, scriptHxLuaCode);
+			var resultStr:String = Lua.tostring(lua, [result, resultHxLua]);
 			if(resultStr != null && result != 0) {
 				trace('Error on lua script! ' + resultStr);
 				#if (windows || android)
