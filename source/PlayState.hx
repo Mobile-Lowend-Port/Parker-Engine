@@ -5130,14 +5130,14 @@ class PlayState extends MusicBeatState
 	
 	public function callOnScripts(name:String, ?args:Array<Any>):Dynamic
     {
-    scripts.executeAllFunc(name, args);
-    callOnLs(name, args);
+    return scripts.executeAllFunc(name, args);
+    return callOnLs(name, args);
     //callOnLuas(name, args);
     }
 	
     public function callOnHScripts(name:String, ?args:Array<Any>):Array<Dynamic>
     {
-    callOnScripts(name, args); 
+    return scripts.executeAllFunc(name, args); 
     }
     
     /* 
@@ -5179,7 +5179,7 @@ class PlayState extends MusicBeatState
 			if(exclusions.contains(script.scriptName))
 				continue;
 
-			var myValue = script.callFunc(event, args);
+			var myValue = script.call(event, args);
 			if(myValue == FunkinLua.Function_StopLua && !ignoreStops)
 				break;
 			
