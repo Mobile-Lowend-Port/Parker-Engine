@@ -131,10 +131,4 @@ class FunkinLScript
 		Ls.callFunc("onCreate");
 	}
 	
-	public override function update(elapsed:Float) {
-		
-		Ls.callFunc("onUpdate", [elapsed]);
-
-		super.update(elapsed);
-	}
 }
