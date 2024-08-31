@@ -130,5 +130,12 @@ class FunkinLScript
 		Ls.execute();
 		Ls.callFunc("onCreate");
 	}
+	public function call(func:String, args:Array<Dynamic>):Dynamic {
+        if(Ls == null) return Function_Continue;
+
+	Ls.callFunc(func, args);
+	
+	return Function_Continue;
+	}
 	
 }
