@@ -2725,6 +2725,7 @@ class PlayState extends MusicBeatState
 			iconP1.swapOldIcon();
 		}*/
 		callOnLuas('onUpdate', [elapsed]);
+		callOnLs('onUpdate', [elapsed]);
 		if (scripts != null)
 		{
 			scripts.update(elapsed);
