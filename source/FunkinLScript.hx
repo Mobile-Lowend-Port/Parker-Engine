@@ -46,7 +46,8 @@ class FunkinLScript
 		
 		Ls = new LScript(script);
 		try{
-		    var resultStr:String = Lua.tostring(Ls.luaState, script);
+		var result:Dynamic = script;
+		var resultStr:String = Lua.tostring(Ls.luaState, result);
     		if (Ls != null)
     		{
     		#if (windows || android)
