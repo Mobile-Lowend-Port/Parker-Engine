@@ -131,11 +131,11 @@ class FunkinLScript
 		Ls.callFunc("onCreate");
 	}
 	public function call(func:String, args:Array<Dynamic>):Dynamic {
-        if(Ls == null) return Function_Continue;
+        if(Ls == null) return FunkinLua.Function_Continue;
 
 	Ls.callFunc(func, args);
 	
-	return Function_Continue;
+	return FunkinLua.Function_Continue;
 	}
 	
 }
