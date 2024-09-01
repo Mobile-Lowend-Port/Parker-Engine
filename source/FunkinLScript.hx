@@ -39,7 +39,7 @@ import sys.io.File;
 class FunkinLScript
 {
     #if LUA_ALLOWED
-    public var Ls:LScript = null;
+    public var Ls:LScript;
     #end
     public var scriptName:String = '';
     public function new(script:String) {
