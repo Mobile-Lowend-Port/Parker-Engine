@@ -1291,7 +1291,7 @@ class PlayState extends MusicBeatState
 		for (event in eventPushedMap.keys())
 		{
 			startLuasOnFolder('custom_events/' + event + '.lua');
-			startLsOnFolder('custom_events/' + notetype + '.lscript');
+			startLsOnFolder('custom_events/' + event + '.lscript');
 		}
 		#end
 		/*for (notetype in noteTypeMap.keys())
