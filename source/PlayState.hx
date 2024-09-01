@@ -922,6 +922,11 @@ class PlayState extends MusicBeatState
 						lsArray.push(new FunkinLScript(folder + file));
 						filesPushed.push(file);
 					}
+					if(file.endsWith('.lscript') && !filesPushed.contains(file))
+					{
+						lsArray.push(new FunkinLScript(folder + file));
+						filesPushed.push(file);
+					}
 				}
 			}
 		}
@@ -931,6 +936,7 @@ class PlayState extends MusicBeatState
 		// STAGE SCRIPTS
 		#if (MODS_ALLOWED && LUA_ALLOWED)
 		startLuasOnFolder('stages/' + curStage + '.lua');
+		startLsOnFolder('stages/' + curStage + '.lua');
 		#end
 
 		var gfVersion:String = SONG.gfVersion;
@@ -1114,10 +1120,10 @@ class PlayState extends MusicBeatState
 		for (notetype in noteTypeMap.keys())
 		{
 			var luaToLoad:String = Paths.modFolders('custom_notetypes/' + notetype + '.lua');
+			var lsToLoad:String = Paths.modFolders('custom_notetypes/' + notetype + '.lscript');
 			if(FileSystem.exists(luaToLoad))
 			{
 				luaArray.push(new FunkinLua(luaToLoad));
-				lsArray.push(new FunkinLScript(luaToLoad));
 			}
 			else
 			{
@@ -1125,7 +1131,19 @@ class PlayState extends MusicBeatState
 				if(FileSystem.exists(luaToLoad))
 				{
 					luaArray.push(new FunkinLua(luaToLoad));
-					lsArray.push(new FunkinLScript(luaToLoad));
+				}
+			}
+			
+			if(FileSystem.exists(lsToLoad))
+			{
+				lsArray.push(new FunkinLScript(lsToLoad));
+			}
+			else
+			{
+				lsToLoad = SUtil.getPath() + Paths.getPreloadPath('custom_notetypes/' + notetype + '.lscript');
+				if(FileSystem.exists(lsToLoad))
+				{
+					lsArray.push(new FunkinLScript(lsToLoad));
 				}
 			}
 		}
@@ -1268,10 +1286,12 @@ class PlayState extends MusicBeatState
 		for (notetype in noteTypeMap.keys())
 		{
 			startLuasOnFolder('custom_notetypes/' + notetype + '.lua');
+			startLsOnFolder('custom_notetypes/' + notetype + '.lscript');
 		}
 		for (event in eventPushedMap.keys())
 		{
 			startLuasOnFolder('custom_events/' + event + '.lua');
+			startLsOnFolder('custom_events/' + notetype + '.lscript');
 		}
 		#end
 		/*for (notetype in noteTypeMap.keys())
@@ -1315,7 +1335,11 @@ class PlayState extends MusicBeatState
 				{
 					if(file.endsWith('.lua') && !filesPushed.contains(file))
 					{
-						luaArray.push(new FunkinLua(folder + file));
+						lsArray.push(new FunkinLScript(folder + file));
+						filesPushed.push(file);
+					}
+					if(file.endsWith('.lscript') && !filesPushed.contains(file))
+					{
 						lsArray.push(new FunkinLScript(folder + file));
 						filesPushed.push(file);
 					}
@@ -1651,6 +1675,37 @@ class PlayState extends MusicBeatState
 				if(script.scriptName == luaFile) return;
 			}
 			luaArray.push(new FunkinLua(luaFile));
+		}
+		#end
+	}
+	function startCharacterLs(name:String)
+	{
+		#if LUA_ALLOWED
+		var doPush:Bool = false;
+		var luaFile:String = 'characters/' + name + '.lscript';
+		#if MODS_ALLOWED
+		if(FileSystem.exists(Paths.modFolders(luaFile))) {
+			luaFile = Paths.modFolders(luaFile);
+			doPush = true;
+		} else {
+			luaFile = SUtil.getPath() + Paths.getPreloadPath(luaFile);
+			if(FileSystem.exists(luaFile)) {
+				doPush = true;
+			}
+		}
+		#else
+		luaFile = Paths.getPreloadPath(luaFile);
+		if(Assets.exists(luaFile)) {
+			doPush = true;
+		}
+		#end
+
+		if(doPush)
+		{
+			for (script in lsArray)
+			{
+				if(script.scriptName == luaFile) return;
+			}
 			lsArray.push(new FunkinLScript(luaFile));
 		}
 		#end
@@ -5073,7 +5128,6 @@ class PlayState extends MusicBeatState
 		if(FileSystem.exists(luaToLoad))
 		{
 			luaArray.push(new FunkinLua(luaToLoad));
-			lsArray.push(new FunkinLScript(luaToLoad));
 			return true;
 		}
 		else
@@ -5082,7 +5136,6 @@ class PlayState extends MusicBeatState
 			if(FileSystem.exists(luaToLoad))
 			{
 				luaArray.push(new FunkinLua(luaToLoad));
-				lsArray.push(new FunkinLScript(luaToLoad));
 				return true;
 			}
 		}
@@ -5091,6 +5144,38 @@ class PlayState extends MusicBeatState
 		if(OpenFlAssets.exists(luaToLoad))
 		{
 			luaArray.push(new FunkinLua(luaToLoad));
+			return true;
+		}
+		#end
+		return false;
+	}
+	public function startLsOnFolder(luaFile:String)
+	{
+		for (script in lsArray)
+		{
+			if(script.scriptName == luaFile) return false;
+		}
+
+		#if MODS_ALLOWED
+		var luaToLoad:String = Paths.modFolders(luaFile);
+		if(FileSystem.exists(luaToLoad))
+		{
+			lsArray.push(new FunkinLScript(luaToLoad));
+			return true;
+		}
+		else
+		{
+			luaToLoad = Paths.getPreloadPath(luaFile);
+			if(FileSystem.exists(luaToLoad))
+			{
+				lsArray.push(new FunkinLScript(luaToLoad));
+				return true;
+			}
+		}
+		#elseif sys
+		var luaToLoad:String = Paths.getPreloadPath(luaFile);
+		if(OpenFlAssets.exists(luaToLoad))
+		{
 			lsArray.push(new FunkinLScript(luaToLoad));
 			return true;
 		}
