@@ -971,9 +971,10 @@ class ChartingState extends MusicBeatState
         var endexts:Array<String> = [
 			#if LUA_ALLOWED
 			".lua",
+		        ".lscript",
 			#end
 			".hscript",
-			"hsc",
+			".hsc",
 			".hx",
 			".hxs"
 		];
