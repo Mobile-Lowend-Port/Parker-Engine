@@ -45,20 +45,6 @@ class FunkinLScript
     public function new(script:String) {
 		
 		Ls = new LScript(File.getContent(script));
-		try{
-		var result:Dynamic = File.getContent(script);
-		var resultStr:String = Lua.tostring(Ls.luaState, result);
-    		if (Ls != null)
-    		{
-    		#if (windows || android)
-    		openfl.Lib.application.window.alert(resultStr, 'Error on lua script!');
-    		#else
-    		FunkinLua.luaTrace('Error loading lua script: "$script"\n' + resultStr, true, false, flixel.util.FlxColor.RED);
-    		#end
-    		Ls = null;
-    		return;
-    		}
-		}
 		
 		scriptName = script;
 		Ls.parent = this;
