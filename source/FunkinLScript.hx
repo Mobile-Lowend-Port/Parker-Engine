@@ -44,9 +44,9 @@ class FunkinLScript
     public var scriptName:String = '';
     public function new(script:String) {
 		
-		Ls = new LScript(script);
+		Ls = new LScript(File.getContent(script));
 		try{
-		var result:Dynamic = script;
+		var result:Dynamic = File.getContent(script);
 		var resultStr:String = Lua.tostring(Ls.luaState, result);
     		if (Ls != null)
     		{
