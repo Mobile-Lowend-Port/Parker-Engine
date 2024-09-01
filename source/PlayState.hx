@@ -919,7 +919,6 @@ class PlayState extends MusicBeatState
 					if(file.endsWith('.lua') && !filesPushed.contains(file))
 					{
 						luaArray.push(new FunkinLua(folder + file));
-						lsArray.push(new FunkinLScript(folder + file));
 						filesPushed.push(file);
 					}
 					if(file.endsWith('.lscript') && !filesPushed.contains(file))
@@ -1110,7 +1109,7 @@ class PlayState extends MusicBeatState
 		initScripts();
 		initSongEvents();
 
-		callOnScripts("onCreate");
+		scripts.executeAllFunc("onCreate");
 
 		// startCountdown();
 	        
